@@ -1,0 +1,58 @@
+Code -
+
+import tweepy
+import matplotlib.pyplot as plt
+from  textblob import TextBlob 
+import time
+
+# all 4 authentication keys to access twitter API
+# to connect as OAth handler or jump serever / revers proxy server
+consumer_key = "PSnUClLT3W8ybnULkxAMqLzCB"
+consumer_sec = "S2OHPTNuDvArmeBO0smvMnvdT2gkKB2bGgysVZNrYWo2Go27U8"
+# from proxy server we need to connect
+access_token = "984811095100555264-MxNs5pYnN47OrGaAg8cs69tRZuma6Rm"
+access_token_sec = "VUOyzny7YYp7NZuoRXzPLtg3o4vDFXZBEv4qbeF4yqV1N"
+
+# tweepy explore
+dir(tweepy)
+
+# connected to jump server of twitter
+auth=tweepy.OAuthHandler(consumer_key,consumer_sec)
+
+# now we can connect from jump server to web server of twitter
+auth.set_access_token(access_token,access_token_sec)
+
+# now we can connect to API storge server of twitter
+api_connect=tweepy.API(auth)
+
+# now you can search any topic on twitter
+tweet_data=api_connect.search('India',count=100)
+
+tweet_data
+
+pos=0
+neg=0
+neu=0
+
+# printing line by line
+for tweet in tweet_data:
+   #print(tweet.text)
+   analysis=TextBlob(tweet.text) # here it will apply NLP\
+   print(analysis.sentiment)
+   # now checking polarity only
+   if analysis.sentiment.polarity > 0:
+      print("posative")
+      pos=pos+1
+   elif analysis.sentiment.polarity == 0 :
+      print("Neutral")
+      neu=neu+1
+   else :
+      print("Negative")
+      neg=neg+1
+      
+# ploting graphs
+plt.xlabel("tags")
+plt.ylabel("polarity")
+#plt.bar(['pos','neg','neu'],[pos,neg,neu])
+plt.pie([pos,neg,neu],labels=['pos','neg','neu'],autopct="%1.1f%%")
+plt.show()
